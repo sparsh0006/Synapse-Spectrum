@@ -15,6 +15,10 @@ module.exports = { // Changed from export default for CommonJS compatibility wit
         'neon-orange-start': '#ffbd44',
         'neon-orange-end': '#fcb045',
       },
+      fontFamily: {
+        'sans': ['Inter', 'sans-serif'],
+        'display': ['Orbitron', 'sans-serif'], // For headings
+      },
       backgroundImage: {
         'neon-orange-gold-gradient': 'linear-gradient(to right, #ffbd44, #fcb045)',
       },

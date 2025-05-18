@@ -1,15 +1,22 @@
 // src/types/mindmap.ts
+export type NodeStatus = 'todo' | 'inprogress' | 'done';
+
 export interface NodeData {
   id: string;
-  label: string;
+  label: string; // This will be the "Task Title"
   x?: number;
   y?: number;
-  z?: number; // For 3D positioning
-  fx?: number | null; // Fixed x position for D3
-  fy?: number | null; // Fixed y position for D3
-  fz?: number | null; // Fixed z position for D3 (if using 3D force)
+  z?: number;
+  fx?: number | null;
+  fy?: number | null;
+  fz?: number | null;
   isRoot?: boolean;
-  color?: string; // Optional: if nodes have specific colors
+  color?: string;
+
+  // New fields for task details
+  description?: string;
+  status?: NodeStatus;
+  dueDate?: string; // Store as string for simplicity with prompt, can be ISO date string
 }
 
 export interface EdgeData {

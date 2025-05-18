@@ -10,11 +10,16 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #100018; /* Darker purple for base if grid is slightly lighter */
-  background-image:
-    linear-gradient(rgba(43, 1, 76, 0.3) 1px, transparent 1px), /* Lighter grid lines */
-    linear-gradient(90deg, rgba(43, 1, 76, 0.3) 1px, transparent 1px);
-  background-size: 25px 25px; /* Adjust grid size */
+  
+  background-color: #100018; /* Darker purple base */
+
+  /* --- CORRECTED PATH --- */
+  /* The path is relative from 'src/index.css' to 'src/assets/grid-bg.png' */
+  background-image: url('./assets/grid-bg.png');  
+  background-repeat: repeat; 
+  background-size: auto; 
+  background-position: center center; 
+  
   color: #f0f0f0;
   overflow: hidden;
 }
@@ -22,7 +27,7 @@ body {
 #root {
   width: 100vw;
   height: 100vh;
-  display: flex; /* Optional: if App needs to fill screen directly */
-  justify-content: center; /* Optional */
-  align-items: center; /* Optional */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

@@ -1,7 +1,7 @@
 // src/hooks/useMindMapData.ts
 import { useState, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { NodeData, EdgeData, MindMapData } from '../types/mindmap';
+import { NodeData, EdgeData, MindMapData, NodeStatus } from '../types/mindmap';
 
 const initialColors = [
   '#7df9ff', // Electric Blue
@@ -9,9 +9,7 @@ const initialColors = [
   '#fcf6bd', // Light Yellow
   '#ffbd44', // Soft Orange
 ];
-
 let colorIndex = 0;
-
 const getNextColor = () => {
   const color = initialColors[colorIndex % initialColors.length];
   colorIndex++;
@@ -25,21 +23,19 @@ export const useMindMapData = () => {
   const addRootNode = useCallback((label: string = "Root Node") => {
     setData(prevData => {
       if (prevData.nodes.some(node => node.isRoot)) {
-        // Prevent adding multiple root nodes or handle as desired (e.g., replace)
-        alert("A root node already exists. Please reset or modify the existing root.");
+        alert("A root node already exists. Please reset or modify it.");
         return prevData;
       }
       const newNode: NodeData = {
         id: uuidv4(),
         label,
-        x: 0,
-        y: 0,
-        z: 0,
-        fx: 0, // Fix root at center initially
-        fy: 0,
-        fz: 0,
+        x: 0, y: 0, z: 0,
+        fx: 0, fy: 0, fz: 0,
         isRoot: true,
         color: getNextColor(),
+        description: "", // Initialize new fields
+        status: 'todo',
+        dueDate: ""
       };
       return { ...prevData, nodes: [newNode] };
     });
@@ -52,27 +48,21 @@ export const useMindMapData = () => {
         console.error("Parent node not found for ID:", parentId);
         return prevData;
       }
-
-      // Unfix parent node if it was fixed (like root initially, or dragged nodes)
-      // This allows D3 to position it relative to its new child
       const updatedParentNodes = prevData.nodes.map(n =>
         n.id === parentId ? { ...n, fx: null, fy: null, fz: null } : n
       );
-
       const newNode: NodeData = {
         id: uuidv4(),
         label,
-        // Attempt to position new node somewhat near parent for better initial visual
         x: parentNode.x || 0 + (Math.random() - 0.5) * 50,
         y: parentNode.y || 0 + (Math.random() - 0.5) * 50,
-        z: parentNode.z || 0, // Keep z the same as parent for now
+        z: parentNode.z || 0,
         color: getNextColor(),
+        description: "", // Initialize new fields
+        status: 'todo',
+        dueDate: ""
       };
-      const newEdge: EdgeData = {
-        id: uuidv4(),
-        source: parentId,
-        target: newNode.id,
-      };
+      const newEdge: EdgeData = { id: uuidv4(), source: parentId, target: newNode.id };
       return { nodes: [...updatedParentNodes, newNode], edges: [...prevData.edges, newEdge] };
     });
   }, []);
@@ -86,9 +76,18 @@ export const useMindMapData = () => {
     }));
   }, []);
 
+  // Function to update detailed task information
+  const updateNodeDetails = useCallback((nodeId: string, details: Partial<Pick<NodeData, 'description' | 'status' | 'dueDate'>>) => {
+    setData(prevData => ({
+      ...prevData,
+      nodes: prevData.nodes.map(node =>
+        node.id === nodeId ? { ...node, ...details } : node
+      ),
+    }));
+  }, []);
+
+
   const updateNodePosition = useCallback((nodeId: string, position: { x: number; y: number; z: number }) => {
-    // This function is typically called during a drag operation.
-    // It sets fx, fy, fz to fix the node's position, overriding D3 simulation for that node.
     setData(prevData => ({
       ...prevData,
       nodes: prevData.nodes.map(node =>
@@ -98,7 +97,6 @@ export const useMindMapData = () => {
   }, []);
 
   const releaseNodeFix = useCallback((nodeId: string) => {
-    // Called after a drag ends to allow D3 simulation to influence the node again.
     setData(prevData => ({
       ...prevData,
       nodes: prevData.nodes.map(node =>
@@ -107,23 +105,46 @@ export const useMindMapData = () => {
     }));
   }, []);
 
+  const deleteNode = useCallback((nodeIdToDelete: string) => {
+    setData(prevData => {
+      const nodeExists = prevData.nodes.find(n => n.id === nodeIdToDelete);
+      if (!nodeExists) return prevData; // Node already deleted or never existed
+
+      // Prevent deleting the root node if it's the only node
+      // if (nodeExists.isRoot && prevData.nodes.length === 1) {
+      //   alert("Cannot delete the only root node. Reset layout to start over.");
+      //   return prevData;
+      // }
+      // More robust deletion logic might be needed for complex scenarios (e.g., re-parenting children)
+      // For now, simple removal of node and its connected edges.
+
+      const newNodes = prevData.nodes.filter(node => node.id !== nodeIdToDelete);
+      const newEdges = prevData.edges.filter(edge => edge.source !== nodeIdToDelete && edge.target !== nodeIdToDelete);
+
+      return { nodes: newNodes, edges: newEdges };
+    });
+    // Deselect the node if it was the one deleted
+    setSelectedNodeId(currentSelectedId => (currentSelectedId === nodeIdToDelete ? null : currentSelectedId));
+  }, []);
 
   const resetLayout = useCallback(() => {
-    colorIndex = 0; // Reset color index for new nodes
+    colorIndex = 0;
     setData({ nodes: [], edges: [] });
     setSelectedNodeId(null);
   }, []);
 
   return {
     data,
-    setData, // Expose setData for direct manipulation (e.g., by force layout updates)
+    setData,
     selectedNodeId,
     setSelectedNodeId,
     addRootNode,
     addChildNode,
     updateNodeText,
+    updateNodeDetails, // <-- Export new function
     updateNodePosition,
     releaseNodeFix,
+    deleteNode,         // <-- Export new function
     resetLayout,
   };
 };

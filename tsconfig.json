@@ -1,0 +1,22 @@
+// tsconfig.json
+{
+  "compilerOptions": {
+    "target": "ES6", // Or newer, aligns with @babel/preset-env
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext", // For modern module systems
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true, // Babel handles transpilation, TypeScript for type checking
+    "jsx": "react-jsx" // Modern JSX transform
+  },
+  "include": ["src"], // Which files to include
+  "exclude": ["node_modules", "dist"] // Which files to exclude
+}

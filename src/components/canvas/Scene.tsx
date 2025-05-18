@@ -1,7 +1,7 @@
 // src/components/canvas/Scene.tsx
 import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei'; // Re-enabled OrbitControls
+import { OrbitControls } from '@react-three/drei';
 import MindMapNode from './MindMapNode';
 import NodeConnection from './NodeConnection';
 import Effects from './Effects';
@@ -31,14 +31,16 @@ const Scene: React.FC<SceneProps> = ({
   return (
     <Canvas
       ref={canvasRef}
-      camera={{ position: [0, 0, 150], fov: 50 }}
+      // Adjusted camera for better depth viewing
+      camera={{ position: [0, 75, 300], fov: 55 }} // Further back, slightly higher, wider FOV
       style={{ background: 'transparent' }}
       gl={{ preserveDrawingBuffer: true }}
     >
-      <ambientLight intensity={0.5} />
-      <pointLight position={[100, 100, 100]} intensity={1} color="#7df9ff" />
-      <pointLight position={[-100, -100, -100]} intensity={0.5} color="#ff5ecb" />
-      <directionalLight position={[0, 50, 50]} intensity={0.8} />
+      <ambientLight intensity={0.6} /> {/* Slightly brighter ambient light */}
+      <pointLight position={[150, 150, 200]} intensity={1.2} color="#7df9ff" />
+      <pointLight position={[-150, -150, 100]} intensity={0.7} color="#ff5ecb" />
+      <directionalLight position={[0, 100, 150]} intensity={1} /> {/* Stronger directional light */}
+
       <Suspense fallback={null}>
         {nodes.map(node => (
           <MindMapNode
@@ -71,10 +73,9 @@ const Scene: React.FC<SceneProps> = ({
         enablePan={true}
         enableZoom={true}
         enableRotate={true}
-        minDistance={20}
-        maxDistance={1000}
+        minDistance={20}       // Can zoom in reasonably close
+        maxDistance={2000}     // Allow zooming out much further to see the depth
       />
-      {/* If you have <Stats />, ensure no text around it either */}
     </Canvas>
   );
 };

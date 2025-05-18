@@ -53,6 +53,7 @@ const MindMapNode: React.FC<MindMapNodeProps> = ({
       startY: event.clientY,
       didMove: false,
     };
+    // console.log(`MindMapNode (${nodeData.label}): POINTER DOWN`); // Keep for debugging if needed
   };
 
   const handlePointerMove = (event: any) => {
@@ -67,6 +68,7 @@ const MindMapNode: React.FC<MindMapNodeProps> = ({
       }
 
       if (dragInfo.current.didMove) {
+        // console.log(`MindMapNode (${nodeData.label}): POINTER MOVE - DRAGGING`); // Keep for debugging if needed
         const { movementX, movementY } = event;
         const factor = 0.1;
         const newPosition = {
@@ -83,10 +85,15 @@ const MindMapNode: React.FC<MindMapNodeProps> = ({
   const handlePointerUp = (event: any) => {
     event.stopPropagation();
     (event.target as HTMLElement).releasePointerCapture(event.pointerId);
+    // console.log(`MindMapNode (${nodeData.label}): POINTER UP. Did move: ${dragInfo.current.didMove}`); // Keep for debugging
+
     if (dragInfo.current.isDragging && dragInfo.current.didMove) {
       onDragEnd(nodeData.id);
     }
-    dragInfo.current = { isDragging: false, startX: 0, startY: 0, didMove: false };
+    // Reset drag state *after* click/dblclick might have used it
+    // The click/dblclick handlers will check dragInfo.current.didMove
+    // For safety, we can reset isDragging here, but didMove is key for click handlers
+    // dragInfo.current = { isDragging: false, startX: 0, startY: 0, didMove: false }; // We will reset fully after click
   };
 
   const nodeColor = nodeData.color || '#7df9ff';
@@ -96,15 +103,27 @@ const MindMapNode: React.FC<MindMapNodeProps> = ({
       ref={meshRef}
       onClick={(e) => {
         e.stopPropagation();
+        console.log(`MindMapNode (${nodeData.label}): MESH CLICKED! dragInfo.didMove: ${dragInfo.current.didMove}`); // DEBUG
         if (!dragInfo.current.didMove) {
+          console.log(`MindMapNode (${nodeData.label}): Calling onNodeClick prop with ID: ${nodeData.id}`); // DEBUG
           onNodeClick(nodeData.id);
+        } else {
+          console.log(`MindMapNode (${nodeData.label}): Click ignored because it was a drag.`); // DEBUG
         }
+        // Reset drag info fully after a click sequence has completed
+        dragInfo.current = { isDragging: false, startX: 0, startY: 0, didMove: false };
       }}
       onDoubleClick={(e) => {
         e.stopPropagation();
+        console.log(`MindMapNode (${nodeData.label}): MESH DOUBLE-CLICKED! dragInfo.didMove: ${dragInfo.current.didMove}`); // DEBUG
         if (!dragInfo.current.didMove) {
-          onNodeDoubleClick(nodeData.id, nodeData.label);
+            console.log(`MindMapNode (${nodeData.label}): Calling onNodeDoubleClick prop with ID: ${nodeData.id}`); // DEBUG
+            onNodeDoubleClick(nodeData.id, nodeData.label);
+        } else {
+            console.log(`MindMapNode (${nodeData.label}): Double-click ignored because it was a drag.`); // DEBUG
         }
+        // Reset drag info fully after a double click sequence has completed
+        dragInfo.current = { isDragging: false, startX: 0, startY: 0, didMove: false };
       }}
       onPointerOver={(e) => { e.stopPropagation(); setIsHovered(true); }}
       onPointerOut={(e) => { e.stopPropagation(); setIsHovered(false); }}

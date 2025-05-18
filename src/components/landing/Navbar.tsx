@@ -28,7 +28,7 @@ export default function Navbar() {
     >
       <div className="container mx-auto flex justify-between items-center">
         <RouterLink to="/" className="text-2xl font-display text-glow-pink font-bold"> {/* Ensure font-display is in tailwind.config.js */}
-          Mind<span className="text-neon-electric-blue">Flux</span> 3D
+          Synapse<span className="text-neon-electric-blue">Spectrum</span> 
         </RouterLink>
         <div className="hidden md:flex items-center space-x-1">
           <NavLink href="#about">About</NavLink>

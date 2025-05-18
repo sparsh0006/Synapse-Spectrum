@@ -14,7 +14,7 @@ export default function LandingPage() {
       <FeaturesSection />
       {/* Add other sections like HowItWorks, Timeline, FAQs, Contact/Footer */}
       <div className="text-center py-20">
-        <p>More sections like "How it Works", "Timeline", and "FAQs" coming soon!</p>
+        <p> Made with <span role="img" aria-label="love">❤️</span> in CodeCircuit Hackathon</p>
       </div>
     </div>
   );

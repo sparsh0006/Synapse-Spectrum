@@ -1,33 +1,42 @@
 /* src/index.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@500;700;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   
-  background-color: #100018; /* Darker purple base */
+  /* Default background for the landing page */
+  background-color: #0D0E2B; /* brand-deep-blue from images */
+  color: #E0E0FF; /* brand-light-text */
+  overflow-x: hidden; /* Prevent horizontal scroll on landing page sections */
+}
 
-  /* --- CORRECTED PATH --- */
-  /* The path is relative from 'src/index.css' to 'src/assets/grid-bg.png' */
-  background-image: url('./assets/grid-bg.png');  
-  background-repeat: repeat; 
-  background-size: auto; 
-  background-position: center center; 
-  
-  color: #f0f0f0;
-  overflow: hidden;
+/* This class will be applied to the main container of MindMapBuilderPage.tsx */
+.mindmap-app-bg {
+  background-color: #100018 !important; /* Your original mind map dark purple */
+  background-image: url('./assets/grid-bg.png') !important; 
+  background-repeat: repeat !important; 
+  background-size: auto !important; 
+  background-position: center center !important; 
+  /* Ensure it takes full viewport */
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden; /* Specific to the app page */
 }
 
 #root {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  /* No specific width/height needed here, pages will control their own size */
 }
+
+/* Glow text utilities (keep these) */
+.text-glow-pink { /* ... */ }
+.text-glow-blue { /* ... */ }
+/* Scrollbar (keep these) */
+::-webkit-scrollbar { /* ... */ }
+/* ... */

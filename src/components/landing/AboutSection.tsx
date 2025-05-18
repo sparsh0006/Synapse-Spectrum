@@ -72,7 +72,10 @@ export default function AboutSection() {
               className="bg-neon-purple-indigo/30 p-6 md:p-8 rounded-xl shadow-2xl border border-neon-pink/30 aspect-video flex items-center justify-center min-h-[300px] md:min-h-[350px]"
             >
               {/* Placeholder for a more complex 3D visual or an animated GIF/video of your app */}
-              <Minimal3DShape className="w-48 h-48 md:w-64 md:h-64 opacity-80" shapeColor="#fcf6bd"/>
+              <Minimal3DShape 
+                className="w-48 h-48 md:w-64 md:h-64 opacity-90" // Slightly increased opacity for better visibility
+                shapeColor="#ff5ecb" // Changed to your neon pink color
+              />
               {/* <p className="text-center text-brand-light-text/70">
                 [Visual representation of the mind map in action could go here - e.g., a more complex `Minimal3DShape` instance or an animated GIF]
               </p> */}
